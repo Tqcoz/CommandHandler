@@ -1,21 +1,27 @@
-const BMA = require('../config.json').BMA
-const BCO = require('../config.json').BCO
-const OID = process.env.oid
+const config = require('../json/config.json')
+const admins = config.admins
 
-const mainroles = [BMA, BCO, OID]
-
-module.exports.run = (bot, message, args) => {
-  if (message.author.id == BCO) {
-  message.author.send(`Your permissions are Co-Owner level! You have full permissions.`)
-  }
-  if (message.author.id == BMA) {
-    message.author.send(`Your permissions are Main Admin level! You have full permissions.`)
-  }
+module.exports.run = (bot, message, args, discord) => {
   if (message.author.id == process.env.oid) {
-    message.author.send(`You are the owner! Hello my Creator!`)
-  }
-  if (!message.author.id == mainroles) {
-    message.author.send(`You have the everyone permissions.`)
+    let em = new discord.RichEmbed()
+    .setTitle("Hulkbot Perms")
+    .setDescription("Your user ID is set as `process.env.oid`, you have full perms.")
+    .setTimestamp()
+    .setFooter(`Requested by ${message.author.username}.`)
+    .setColor("RANDOM")
+    message.author.send({embed: em})
+  } else {
+    if (admins.includes(message.author.id)) {
+      let em = new discord.RichEmbed()
+      .setTitle("Hulkbot Perms")
+      .setDescription("Your user ID is in the admin list, you have admin permissions.")
+      .setTimestamp()
+      .setFooter(`Requested by ${message.author.username}.`)
+      .setColor("RANDOM")
+      message.author.send({embed: em})
+    } else {
+      message.author.send("You are a standard user.")
+    }
   }
 }
 
